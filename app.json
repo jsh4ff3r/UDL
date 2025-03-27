@@ -1,0 +1,16 @@
+{
+  "expo": {
+    "name": "Undefeated Landscaping",
+    "slug": "undefeated-landscaping",
+    "version": "1.0.0",
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
+    "orientation": "portrait",
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    }
+  }
+}
