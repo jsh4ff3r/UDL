@@ -2,12 +2,14 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createStackNavigator } from '@react-navigation/stack';
+
 import LoginScreen from './screens/LoginScreen';
 import SignupScreen from './screens/SignupScreen';
 import BookingScreen from './screens/BookingScreen';
 import CalendarScreen from './screens/CalendarScreen';
 import PaymentScreen from './screens/PaymentScreen';
 import ProfileScreen from './screens/ProfileScreen';
+
 import { AuthProvider } from './screens/AuthContext';
 
 const Drawer = createDrawerNavigator();
