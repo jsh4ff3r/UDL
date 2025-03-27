@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createStackNavigator } from '@react-navigation/stack';
+import { createDrawerNavigator } from '@react-navigation/drawer';
 
 import LoginScreen from './screens/LoginScreen';
 import SignupScreen from './screens/SignupScreen';
@@ -10,14 +10,15 @@ import CalendarScreen from './screens/CalendarScreen';
 import PaymentScreen from './screens/PaymentScreen';
 import ProfileScreen from './screens/ProfileScreen';
 
-import { AuthProvider } from './screens/AuthContext';
-
-const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
+const Drawer = createDrawerNavigator();
 
-function MainDrawer() {
+function DrawerMenu() {
   return (
-    <Drawer.Navigator screenOptions={{ headerShown: true }}>
+    <Drawer.Navigator
+      initialRouteName="Booking"
+      screenOptions={{ headerShown: true }}
+    >
       <Drawer.Screen name="Booking" component={BookingScreen} />
       <Drawer.Screen name="Schedule" component={CalendarScreen} />
       <Drawer.Screen name="Profile & Settings" component={ProfileScreen} />
@@ -25,19 +26,15 @@ function MainDrawer() {
   );
 }
 
-function RootNavigator() {
+export default function App() {
   return (
-    <AuthProvider>
-      <NavigationContainer>
-        <Stack.Navigator initialRouteName="Login" screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="Login" component={LoginScreen} />
-          <Stack.Screen name="Signup" component={SignupScreen} />
-          <Stack.Screen name="Main" component={MainDrawer} />
-          <Stack.Screen name="Payment" component={PaymentScreen} />
-        </Stack.Navigator>
-      </NavigationContainer>
-    </AuthProvider>
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="Login" screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="Login" component={LoginScreen} />
+        <Stack.Screen name="Signup" component={SignupScreen} />
+        <Stack.Screen name="Main" component={DrawerMenu} />
+        <Stack.Screen name="Payment" component={PaymentScreen} />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
-
-export default RootNavigator;
