@@ -1,23 +1,41 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createDrawerNavigator } from '@react-navigation/drawer';
+import { createStackNavigator } from '@react-navigation/stack';
+import LoginScreen from './screens/LoginScreen';
+import SignupScreen from './screens/SignupScreen';
+import BookingScreen from './screens/BookingScreen';
+import CalendarScreen from './screens/CalendarScreen';
+import PaymentScreen from './screens/PaymentScreen';
+import ProfileScreen from './screens/ProfileScreen';
+import { AuthProvider } from './screens/AuthContext';
 
-export default function PayScreen() {
+const Drawer = createDrawerNavigator();
+const Stack = createStackNavigator();
+
+function MainDrawer() {
   return (
-    <View style={styles.container}>
-      <Text style={styles.text}>Payment Screen (Coming Soon)</Text>
-    </View>
+    <Drawer.Navigator screenOptions={{ headerShown: true }}>
+      <Drawer.Screen name="Booking" component={BookingScreen} />
+      <Drawer.Screen name="Schedule" component={CalendarScreen} />
+      <Drawer.Screen name="Profile & Settings" component={ProfileScreen} />
+    </Drawer.Navigator>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5F5F5',
-  },
-  text: {
-    fontSize: 20,
-    color: '#4CAF50',
-  },
-});
+function RootNavigator() {
+  return (
+    <AuthProvider>
+      <NavigationContainer>
+        <Stack.Navigator initialRouteName="Login" screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="Login" component={LoginScreen} />
+          <Stack.Screen name="Signup" component={SignupScreen} />
+          <Stack.Screen name="Main" component={MainDrawer} />
+          <Stack.Screen name="Payment" component={PaymentScreen} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </AuthProvider>
+  );
+}
+
+export default RootNavigator;
