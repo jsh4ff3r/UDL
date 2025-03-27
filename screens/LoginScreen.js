@@ -1,86 +1,86 @@
 import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  StyleSheet,
-  Alert,
-} from 'react-native';
+import { View, TextInput, Button, Text, StyleSheet } from 'react-native';
 
-export default function LoginScreen({ navigation }) {
+const LoginScreen = ({ navigation }) => {
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [phone, setPhone] = useState('');
+  const [address, setAddress] = useState('');
 
   const handleLogin = () => {
-    if (email && password) {
-      // 🔐 Replace this logic with real auth later
-      navigation.navigate('Book');
-    } else {
-      Alert.alert('Error', 'Please enter both email and password.');
-    }
+    // Later: Add real auth here
+    navigation.replace('Main');
+  };
+
+  const handleSignup = () => {
+    // You can link to the signup screen with prefilled info
+    navigation.navigate('Signup', {
+      name,
+      email,
+      phone,
+      address,
+    });
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Welcome Back</Text>
+      <Text style={styles.title}>Welcome to Undefeated Landscaping</Text>
 
       <TextInput
+        placeholder="Full Name"
         style={styles.input}
+        value={name}
+        onChangeText={setName}
+      />
+      <TextInput
         placeholder="Email"
-        autoCapitalize="none"
-        keyboardType="email-address"
+        style={styles.input}
         value={email}
         onChangeText={setEmail}
+        keyboardType="email-address"
       />
-
       <TextInput
+        placeholder="Phone Number"
         style={styles.input}
-        placeholder="Password"
-        secureTextEntry
-        value={password}
-        onChangeText={setPassword}
+        value={phone}
+        onChangeText={setPhone}
+        keyboardType="phone-pad"
+      />
+      <TextInput
+        placeholder="Service Address"
+        style={styles.input}
+        value={address}
+        onChangeText={setAddress}
       />
 
-      <TouchableOpacity style={styles.button} onPress={handleLogin}>
-        <Text style={styles.buttonText}>Log In</Text>
-      </TouchableOpacity>
+      <Button title="Login" onPress={handleLogin} />
+      <Text style={styles.or}>or</Text>
+      <Button title="Sign Up" onPress={handleSignup} />
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
+    padding: 20,
     flex: 1,
-    padding: 30,
     justifyContent: 'center',
-    backgroundColor: '#F5F5F5',
   },
   title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    marginBottom: 30,
+    fontSize: 20,
+    marginBottom: 20,
     textAlign: 'center',
-    color: '#4CAF50',
   },
   input: {
-    backgroundColor: '#FFF',
-    padding: 14,
-    borderRadius: 6,
-    borderColor: '#CCC',
-    borderWidth: 1,
-    marginBottom: 16,
+    marginBottom: 12,
+    borderBottomWidth: 1,
+    padding: 8,
   },
-  button: {
-    backgroundColor: '#4CAF50',
-    padding: 14,
-    borderRadius: 6,
-    alignItems: 'center',
-    marginTop: 10,
-  },
-  buttonText: {
-    color: '#FFF',
-    fontSize: 16,
+  or: {
+    textAlign: 'center',
+    marginVertical: 10,
     fontWeight: 'bold',
   },
 });
+
+export default LoginScreen;
