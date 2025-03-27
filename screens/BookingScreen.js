@@ -1,170 +1,90 @@
 import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  Button,
-  StyleSheet,
-  TextInput,
-  ScrollView,
-  Switch,
-  KeyboardAvoidingView,
-  Platform,
-} from 'react-native';
-import { Calendar } from 'react-native-calendars';
-import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
+import { View, Text, TextInput, Button, StyleSheet, CheckBox, Alert } from 'react-native';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
-export default function BookingScreen({ navigation }) {
-  const [services, setServices] = useState({
-    weekly: false,
-    biweekly: false,
-    cleanup: false,
-    fertilization: false,
-    grassSeed: false,
-  });
+const BookingScreen = ({ navigation }) => {
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [bushTrim, setBushTrim] = useState(false);
+  const [yardCleanup, setYardCleanup] = useState(false);
 
-  const [selectedDate, setSelectedDate] = useState('');
-  const [address, setAddress] = useState('');
-  const [notes, setNotes] = useState('');
+  const address = "Service address from signup (placeholder)";
 
-  const toggleService = (service) => {
-    setServices({ ...services, [service]: !services[service] });
-  };
-
-  const today = new Date();
-  const formattedToday = today.toISOString().split('T')[0];
-  const futureDate = new Date(today);
-  futureDate.setDate(futureDate.getDate() + 30);
-  const formattedMax = futureDate.toISOString().split('T')[0];
-
-  const serviceLabels = {
-    weekly: 'Weekly Services',
-    biweekly: 'Bi-weekly Services',
-    cleanup: 'Clean Ups',
-    fertilization: 'Fertilization',
-    grassSeed: 'Grass Seed',
+  const handleBooking = () => {
+    Alert.alert(
+      "Booking Confirmed",
+      `You selected:\n\n- Mowing ($40)\n${bushTrim ? "- Bush Trimming\n" : ""}${yardCleanup ? "- Yard Cleanup\n" : ""}- Date: ${selectedDate.toDateString()}`,
+      [{ text: "OK", onPress: () => navigation.navigate("Payment") }]
+    );
   };
 
   return (
-    <KeyboardAvoidingView
-      style={{ flex: 1 }}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-    >
-      <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
-        <Text style={styles.title}>Book Your Lawn Service</Text>
+    <View style={styles.container}>
+      <Text style={styles.title}>Book Your Mowing Service</Text>
 
-        {Object.keys(services).map((service) => (
-          <View key={service} style={styles.switchRow}>
-            <Text style={styles.label}>{serviceLabels[service]}</Text>
-            <Switch
-              value={services[service]}
-              onValueChange={() => toggleService(service)}
-            />
-          </View>
-        ))}
+      <Text style={styles.label}>Service Address:</Text>
+      <Text style={styles.value}>{address}</Text>
 
-        <Text style={styles.label}>Select Date</Text>
-        <Calendar
-          onDayPress={(day) => setSelectedDate(day.dateString)}
-          markedDates={{
-            [selectedDate]: {
-              selected: true,
-              selectedColor: '#4CAF50',
-            },
-          }}
-          minDate={formattedToday}
-          maxDate={formattedMax}
-          hideArrows={false}
-          renderArrow={(direction) => (
-            <Text style={styles.arrow}>{direction === 'left' ? '<' : '>'}</Text>
-          )}
-          theme={{
-            arrowColor: '#4CAF50',
-            textMonthFontWeight: 'bold',
-            textMonthFontSize: 18,
-          }}
-        />
+      <Text style={styles.label}>Flat Rate: $40</Text>
 
-        <View style={styles.autocompleteWrapper}>
-          <GooglePlacesAutocomplete
-            placeholder="Search Address"
-            onPress={(data, details = null) => {
-              setAddress(data.description);
+      <View style={styles.checkboxContainer}>
+        <CheckBox value={bushTrim} onValueChange={setBushTrim} />
+        <Text style={styles.checkboxLabel}>Add Bush Trimming</Text>
+      </View>
+
+      <View style={styles.checkboxContainer}>
+        <CheckBox value={yardCleanup} onValueChange={setYardCleanup} />
+        <Text style={styles.checkboxLabel}>Add Yard Cleanup</Text>
+      </View>
+
+      <View style={{ marginVertical: 20 }}>
+        <Button title="Select Service Date" onPress={() => setShowDatePicker(true)} />
+        <Text style={{ marginTop: 10 }}>Selected: {selectedDate.toDateString()}</Text>
+        {showDatePicker && (
+          <DateTimePicker
+            value={selectedDate}
+            mode="date"
+            display="default"
+            onChange={(event, date) => {
+              setShowDatePicker(false);
+              if (date) setSelectedDate(date);
             }}
-            query={{
-              key: 'AIzaSyDLb4dNfk7SwA0YbOaa98unLC99_IjReXM', // ← Your API Key here
-              language: 'en',
-            }}
-            styles={{
-              textInput: styles.input,
-              container: {
-                flex: 0,
-                zIndex: 10,
-              },
-              listView: {
-                zIndex: 20,
-                elevation: 5,
-              },
-            }}
-            fetchDetails={false}
           />
-        </View>
+        )}
+      </View>
 
-        <TextInput
-          placeholder="Additional Notes"
-          style={styles.input}
-          value={notes}
-          onChangeText={setNotes}
-          multiline
-          numberOfLines={4}
-        />
-
-        <Button
-          title="Continue to Payment"
-          onPress={() => navigation.navigate('Pay')}
-          color="#4CAF50"
-        />
-      </ScrollView>
-    </KeyboardAvoidingView>
+      <Button title="Continue to Payment" onPress={handleBooking} />
+    </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
     padding: 20,
-    backgroundColor: '#F5F5F5',
-    flexGrow: 1,
+    flex: 1,
+    backgroundColor: "#fff",
   },
   title: {
     fontSize: 24,
+    fontWeight: "bold",
     marginBottom: 20,
-    fontWeight: 'bold',
-    color: '#4CAF50',
-  },
-  input: {
-    padding: 12,
-    borderColor: '#CCC',
-    borderWidth: 1,
-    borderRadius: 6,
-    marginBottom: 16,
-    backgroundColor: '#FFF',
-  },
-  switchRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 12,
+    textAlign: 'center',
   },
   label: {
-    fontSize: 16,
-    marginBottom: 8,
+    fontWeight: "bold",
+    marginTop: 15,
   },
-  arrow: {
-    fontSize: 20,
-    color: '#4CAF50',
-    paddingHorizontal: 12,
+  value: {
+    marginBottom: 10,
   },
-  autocompleteWrapper: {
-    zIndex: 10,
-    marginBottom: 16,
+  checkboxContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginVertical: 5,
+  },
+  checkboxLabel: {
+    marginLeft: 8,
   },
 });
+
+export default BookingScreen;
